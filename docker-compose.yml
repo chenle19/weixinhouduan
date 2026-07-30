@@ -1,0 +1,36 @@
+services:
+  hair-booking-api:
+    image: ${IMAGE:-ghcr.io/your-github-user-or-org/hair-booking-backend:latest}
+    container_name: hair-booking-api
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - hair_booking_data:/app/data
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/config.json:ro
+    environment:
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_POLL_INTERVAL=60
+    command: --label-enable --cleanup
+
+volumes:
+  hair_booking_data:

@@ -1,0 +1,17 @@
+[project]
+name = "hair-booking-backend"
+version = "0.1.0"
+description = "FastAPI backend for the hair salon mini program and admin dashboard."
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.111.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic-settings>=2.3.0"
+]
+
+[tool.uvicorn]
+factory = false
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["data*"]
