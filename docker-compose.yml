@@ -6,7 +6,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "${APP_PORT:-8000}:8000"
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
     volumes:
       - hair_booking_data:/app/data
     labels:

@@ -105,15 +105,47 @@ GitHub Actions 会构建新镜像并推送到 GHCR。服务器上的 Watchtower 
 
 微信小程序真机预览和线上环境需要 HTTPS 合法域名，不能使用 `127.0.0.1`。
 
+如果 VPS 上已经有另一个项目占用了 80 端口，不要让 Python 容器直接绑定 80。
+正确做法是让 Nginx 继续监听 80/443，并按域名分流：
+
+- `www.clandxdz.cn` -> 原来的项目
+- `api.clandxdz.cn` -> Python 后端 `127.0.0.1:8000`
+
+当前 `docker-compose.yml` 已经把后端绑定到 VPS 本机端口：
+
+```yaml
+ports:
+  - "127.0.0.1:${APP_PORT:-8000}:8000"
+```
+
+所以外网不能直接访问 `:8000`，必须通过 Nginx 反向代理。
+
 Nginx 示例：
 
 ```nginx
 server {
-    listen 443 ssl http2;
-    server_name api.example.com;
+    listen 80;
+    server_name api.clandxdz.cn;
 
-    ssl_certificate /etc/letsencrypt/live/api.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/api.example.com/privkey.pem;
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+HTTPS 示例：
+
+```nginx
+server {
+    listen 443 ssl http2;
+    server_name api.clandxdz.cn;
+
+    ssl_certificate /etc/letsencrypt/live/api.clandxdz.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.clandxdz.cn/privkey.pem;
 
     location / {
         proxy_pass http://127.0.0.1:8000;
@@ -134,7 +166,7 @@ server {
 填写：
 
 ```text
-https://api.example.com
+https://api.clandxdz.cn
 ```
 
 最后把小程序接口地址改成这个 HTTPS 域名。
