@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 187, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 146, in _get_module_details
+    return _get_module_details(pkg_main_name, error)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 110, in _get_module_details
+    __import__(pkg_name)
+  File "C:\Users\Administrator\AppData\Roaming\Python\Python310\site-packages\uvicorn\__init__.py", line 1, in <module>
+    from uvicorn.config import Config
+  File "C:\Users\Administrator\AppData\Roaming\Python\Python310\site-packages\uvicorn\config.py", line 10, in <module>
+    import ssl
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\ssl.py", line 99, in <module>
+    import _ssl             # if we can't import it, let the error propagate
+ImportError: DLL load failed while importing _ssl: 出现了内部错误。

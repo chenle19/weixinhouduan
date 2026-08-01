@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     backend_cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     wechat_appid: str = ""
     wechat_secret: str = ""
+    enable_dev_auth_bypass: bool = False
+    dev_auth_username: str = "dev_miniapp_user"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
